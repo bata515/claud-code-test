@@ -3,52 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>タイピングアプリ</title>
+    <title>✨ モダン タイピング マスター</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1>タイピングアプリ</h1>
+        <header class="app-header">
+            <h1>
+                <span class="title-icon">⌨️</span>
+                <span class="title-text">モダン タイピング マスター</span>
+                <span class="title-glow"></span>
+            </h1>
+            <p class="subtitle">あなたのタイピングスキルを向上させましょう</p>
+        </header>
         
-        <div class="stats">
-            <div class="stat">
-                <span class="label">時間:</span>
-                <span id="timer">60</span>秒
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-content">
+                    <span class="label">残り時間</span>
+                    <div class="stat-value">
+                        <span id="timer">60</span>
+                        <span class="stat-unit">秒</span>
+                    </div>
+                </div>
             </div>
-            <div class="stat">
-                <span class="label">スコア:</span>
-                <span id="score">0</span>
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-content">
+                    <span class="label">スコア</span>
+                    <div class="stat-value">
+                        <span id="score">0</span>
+                        <span class="stat-unit">文字</span>
+                    </div>
+                </div>
             </div>
-            <div class="stat">
-                <span class="label">WPM:</span>
-                <span id="wpm">0</span>
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-content">
+                    <span class="label">スピード</span>
+                    <div class="stat-value">
+                        <span id="wpm">0</span>
+                        <span class="stat-unit">WPM</span>
+                    </div>
+                </div>
             </div>
-            <div class="stat">
-                <span class="label">正確性:</span>
-                <span id="accuracy">100</span>%
+            <div class="stat-card">
+                <div class="stat-icon">💯</div>
+                <div class="stat-content">
+                    <span class="label">正確性</span>
+                    <div class="stat-value">
+                        <span id="accuracy">100</span>
+                        <span class="stat-unit">%</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="text-display">
-            <p id="text-to-type">タイピングを開始するには「スタート」ボタンを押してください。</p>
-        </div>
+        <div class="typing-area">
+            <div class="text-display">
+                <div class="text-content">
+                    <p id="text-to-type">タイピングを開始するには「スタート」ボタンを押してください。</p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
 
-        <div class="input-section">
-            <input type="text" id="text-input" placeholder="ここに入力してください..." disabled>
+            <div class="input-section">
+                <div class="input-wrapper">
+                    <input type="text" id="text-input" placeholder="✨ ここに入力してください..." disabled aria-label="タイピング入力欄">
+                    <div class="input-glow"></div>
+                </div>
+            </div>
         </div>
 
         <div class="controls">
-            <button id="start-btn">スタート</button>
-            <button id="reset-btn">リセット</button>
+            <button id="start-btn" class="btn btn-primary">
+                <span class="btn-icon">🚀</span>
+                <span class="btn-text">スタート</span>
+                <div class="btn-shine"></div>
+            </button>
+            <button id="reset-btn" class="btn btn-secondary">
+                <span class="btn-icon">🔄</span>
+                <span class="btn-text">リセット</span>
+                <div class="btn-shine"></div>
+            </button>
         </div>
 
-        <div class="results" id="results" style="display: none;">
-            <h2>結果</h2>
-            <div class="result-stats">
-                <p>最終スコア: <span id="final-score"></span></p>
-                <p>WPM: <span id="final-wpm"></span></p>
-                <p>正確性: <span id="final-accuracy"></span>%</p>
-                <p>入力した文字数: <span id="typed-chars"></span></p>
+        <div class="results-modal" id="results" style="display: none;">
+            <div class="results-content">
+                <div class="results-header">
+                    <h2>🎉 お疲れさまでした！</h2>
+                    <p class="results-message">素晴らしいタイピングでした</p>
+                </div>
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-icon">🏆</div>
+                        <div class="result-info">
+                            <span class="result-label">最終スコア</span>
+                            <span class="result-value" id="final-score">0</span>
+                        </div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-icon">⚡</div>
+                        <div class="result-info">
+                            <span class="result-label">スピード</span>
+                            <span class="result-value"><span id="final-wpm">0</span> WPM</span>
+                        </div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-icon">🎯</div>
+                        <div class="result-info">
+                            <span class="result-label">正確性</span>
+                            <span class="result-value"><span id="final-accuracy">100</span>%</span>
+                        </div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-icon">📝</div>
+                        <div class="result-info">
+                            <span class="result-label">入力文字数</span>
+                            <span class="result-value" id="typed-chars">0</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="close-results-btn" onclick="document.getElementById('results').style.display='none'">
+                    もう一度挑戦
+                </button>
             </div>
         </div>
     </div>
