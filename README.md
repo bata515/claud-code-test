@@ -1,4 +1,4 @@
-# claud-code-test
+# claud-code-test ver2
 
 Claude Code開発用テストリポジトリです。
 
