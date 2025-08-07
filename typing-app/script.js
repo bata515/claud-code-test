@@ -162,24 +162,6 @@ class TypingApp {
         }
     }
     
-    updateDisplay() {
-        this.textDisplay.innerHTML = this.highlightText();
-        this.scoreElement.textContent = this.correctChars;
-        
-        const elapsedMinutes = (Date.now() - this.startTime) / 60000;
-        const wpm = elapsedMinutes > 0 ? Math.round((this.correctChars / 5) / elapsedMinutes) : 0;
-        this.wpmElement.textContent = wpm;
-        
-        const accuracy = this.totalChars > 0 ? Math.round((this.correctChars / this.totalChars) * 100) : 100;
-        this.accuracyElement.textContent = accuracy;
-        
-        // Update progress bar
-        const progress = this.currentText.length > 0 ? (this.currentIndex / this.currentText.length) * 100 : 0;
-        const progressFill = document.getElementById('progress-fill');
-        if (progressFill) {
-            progressFill.style.width = `${Math.min(progress, 100)}%`;
-        }
-    }
     
     highlightText() {
         const inputValue = this.textInput.value;
