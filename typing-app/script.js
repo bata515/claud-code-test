@@ -22,9 +22,13 @@ class TypingApp {
         this.isGameActive = false;
         this.correctChars = 0;
         this.totalChars = 0;
+        this.lastWpm = 0;
+        this.keystrokes = 0;
+        this.correctKeystrokes = 0;
         
         this.initElements();
         this.bindEvents();
+        this.initAnimations();
     }
     
     initElements() {
@@ -41,6 +45,7 @@ class TypingApp {
         this.finalWpm = document.getElementById('final-wpm');
         this.finalAccuracy = document.getElementById('final-accuracy');
         this.typedChars = document.getElementById('typed-chars');
+        this.progressFill = document.getElementById('progress-fill');
     }
     
     bindEvents() {
@@ -87,6 +92,11 @@ class TypingApp {
         this.wpmElement.textContent = '0';
         this.accuracyElement.textContent = '100';
         this.resultsDiv.style.display = 'none';
+        
+        // Reset progress bar
+        if (this.progressFill) {
+            this.progressFill.style.width = '0%';
+        }
     }
     
     getRandomText() {
@@ -110,6 +120,18 @@ class TypingApp {
         
         const inputValue = e.target.value;
         this.totalChars = inputValue.length;
+        this.keystrokes++;
+        
+        // Check if the current character is correct
+        const currentChar = inputValue[inputValue.length - 1];
+        const expectedChar = this.currentText[inputValue.length - 1];
+        
+        if (currentChar === expectedChar && inputValue.length <= this.currentText.length) {
+            this.correctKeystrokes++;
+            this.addVisualFeedback('correct');
+        } else if (inputValue.length <= this.currentText.length) {
+            this.addVisualFeedback('incorrect');
+        }
         
         // 正しく入力された文字数をカウント
         this.correctChars = 0;
@@ -150,6 +172,13 @@ class TypingApp {
         
         const accuracy = this.totalChars > 0 ? Math.round((this.correctChars / this.totalChars) * 100) : 100;
         this.accuracyElement.textContent = accuracy;
+        
+        // Update progress bar
+        const progress = this.currentText.length > 0 ? (this.currentIndex / this.currentText.length) * 100 : 0;
+        const progressFill = document.getElementById('progress-fill');
+        if (progressFill) {
+            progressFill.style.width = `${Math.min(progress, 100)}%`;
+        }
     }
     
     highlightText() {
@@ -194,7 +223,150 @@ class TypingApp {
         this.finalAccuracy.textContent = finalAccuracy;
         this.typedChars.textContent = this.totalChars;
         
-        this.resultsDiv.style.display = 'block';
+        this.resultsDiv.style.display = 'flex';
+        this.animateResults();
+    }
+    
+    initAnimations() {
+        // Add floating particles effect on page load
+        this.createFloatingParticles();
+    }
+    
+    addVisualFeedback(type) {
+        // Add subtle visual feedback without being intrusive
+        const inputElement = this.textInput;
+        
+        if (type === 'correct') {
+            inputElement.style.borderColor = '#10b981';
+            setTimeout(() => {
+                inputElement.style.borderColor = '';
+            }, 150);
+        } else {
+            inputElement.style.borderColor = '#ef4444';
+            setTimeout(() => {
+                inputElement.style.borderColor = '';
+            }, 150);
+        }
+    }
+    
+    animateResults() {
+        const resultCards = document.querySelectorAll('.result-card');
+        resultCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    }
+    
+    createFloatingParticles() {
+        // Create subtle floating particles in the background
+        const container = document.querySelector('.container');
+        
+        for (let i = 0; i < 5; i++) {
+            const particle = document.createElement('div');
+            particle.style.position = 'absolute';
+            particle.style.width = '4px';
+            particle.style.height = '4px';
+            particle.style.background = 'rgba(99, 102, 241, 0.1)';
+            particle.style.borderRadius = '50%';
+            particle.style.pointerEvents = 'none';
+            particle.style.zIndex = '-1';
+            
+            const x = Math.random() * container.offsetWidth;
+            const y = Math.random() * container.offsetHeight;
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            
+            const duration = 3000 + Math.random() * 2000;
+            particle.style.animation = `float ${duration}ms ease-in-out infinite`;
+            
+            container.appendChild(particle);
+        }
+        
+        // Add CSS for float animation
+        if (!document.getElementById('float-animation')) {
+            const style = document.createElement('style');
+            style.id = 'float-animation';
+            style.textContent = `
+                @keyframes float {
+                    0%, 100% {
+                        transform: translateY(0px) rotate(0deg);
+                        opacity: 0.1;
+                    }
+                    50% {
+                        transform: translateY(-20px) rotate(180deg);
+                        opacity: 0.3;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+    
+    updateDisplay() {
+        this.textDisplay.innerHTML = this.highlightText();
+        this.scoreElement.textContent = this.correctChars;
+        
+        const elapsedMinutes = (Date.now() - this.startTime) / 60000;
+        const wpm = elapsedMinutes > 0 ? Math.round((this.correctChars / 5) / elapsedMinutes) : 0;
+        
+        // Add smooth number animations
+        this.animateNumber(this.wpmElement, this.lastWpm, wpm);
+        this.lastWpm = wpm;
+        
+        const accuracy = this.totalChars > 0 ? Math.round((this.correctChars / this.totalChars) * 100) : 100;
+        this.accuracyElement.textContent = accuracy;
+        
+        // Update progress bar with smooth transition
+        const progress = this.currentText.length > 0 ? (this.currentIndex / this.currentText.length) * 100 : 0;
+        const progressFill = document.getElementById('progress-fill');
+        if (progressFill) {
+            progressFill.style.width = `${Math.min(progress, 100)}%`;
+        }
+        
+        // Add typing rhythm visual feedback
+        this.addTypingRhythmFeedback();
+    }
+    
+    animateNumber(element, from, to) {
+        const duration = 300;
+        const startTime = performance.now();
+        
+        const animate = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            const current = Math.round(from + (to - from) * this.easeOutQuart(progress));
+            element.textContent = current;
+            
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        };
+        
+        requestAnimationFrame(animate);
+    }
+    
+    easeOutQuart(t) {
+        return 1 - (--t) * t * t * t;
+    }
+    
+    addTypingRhythmFeedback() {
+        // Add subtle glow effect during active typing
+        const textDisplay = document.querySelector('.text-display');
+        
+        if (this.isGameActive && this.keystrokes > 0) {
+            textDisplay.style.boxShadow = '0 0 20px rgba(99, 102, 241, 0.15)';
+            
+            setTimeout(() => {
+                textDisplay.style.boxShadow = '';
+            }, 200);
+        }
     }
 }
 
